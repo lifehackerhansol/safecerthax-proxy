@@ -16,13 +16,14 @@ For more information on safecerthax, please visit the [safecerthax website](http
 ##### Running
 To start the proxy server, run the following command:
 ```
-mitmproxy -s safecerthax.py
-  --set certs=\*=<fake_certificate>
-  --set client_certs=<client_certificate>
-  --ssl-insecure
-  --set relax_http_form_validation
-  --set certhax_payload=<safecerthax_binary>
-  --set arm9_payload=<kernelhaxcode_3ds_binary>
+mitmproxy -s safecerthax.py \
+  --set certs=\*=<fake_certificate> \
+  --set client_certs=<client_certificate> \
+  --ssl-insecure \
+  --set relax_http_form_validation \
+  --set certhax_payload=<safecerthax_binary> \
+  --set arm9_payload=<kernelhaxcode_3ds_binary> \
+  --set tls_version_client_min=TLS1_1
 ```
 
 With:

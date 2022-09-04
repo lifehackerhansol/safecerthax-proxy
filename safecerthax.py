@@ -25,9 +25,6 @@ def view_certhaxlog() -> None:
 
 
 def load(l):
-    for stack in ctx.master.window.stacks:
-        stack.windows["certhaxlog"] = CerthaxLog(ctx.master)
-    ctx.master.switch_view("certhaxlog")
     l.add_option(
         name = "certhax_payload",
         typespec = str,
@@ -43,6 +40,11 @@ def load(l):
 
 certhax_payload_b64 = None
 arm9_payload_b64 = None
+
+def running():
+    for stack in ctx.master.window.stacks:
+        stack.windows["certhaxlog"] = CerthaxLog(ctx.master)
+    ctx.master.switch_view("certhaxlog")
 
 def configure(updates):
     global certhax_payload_b64
@@ -91,7 +93,7 @@ def request(flow: http.HTTPFlow) -> None:
         if b"nus:GetSystemTitleHash" in flow.request.content:
             ctx.log.info("[certhax] - Found nus:GetSystemTitleHash message")
             ctx.log.info("[certhax] - Sending dummy SystemTitleHash to trigger sysupdate attempt...")
-            flow.response = http.HTTPResponse.make(
+            flow.response = http.Response.make(
                 200,
                 GetSystemTitleHashResponse,
                 {"Content-Type": "text/xml"}
@@ -99,7 +101,7 @@ def request(flow: http.HTTPFlow) -> None:
         elif b"nus:GetSystemUpdate" in flow.request.content:
             ctx.log.info("[certhax] - Found nus:GetSystemUpdate message")
             ctx.log.info("[certhax] - Sending dummy TitleId to trigger ticket installation attempt...")
-            flow.response = http.HTTPResponse.make(
+            flow.response = http.Response.make(
                 200,
                 GetSystemUpdateResponse,
                 {"Content-Type": "text/xml"}
@@ -107,7 +109,7 @@ def request(flow: http.HTTPFlow) -> None:
         elif b"nus:GetSystemCommonETicket" in flow.request.content:
             ctx.log.info("[certhax] - Found nus:GetSystemCommonETicket message")
             ctx.log.info("[certhax] - Sending payload Certs to trigger the exploit...")
-            flow.response = http.HTTPResponse.make(
+            flow.response = http.Response.make(
                 200,
                 GetSystemCommonETicketResponse.format(certhax_payload_b64, arm9_payload_b64),
                 {"Content-Type": "text/xml"}
@@ -122,7 +124,7 @@ def request(flow: http.HTTPFlow) -> None:
         if b"ecs:GetAccountStatus" in flow.request.content:
             ctx.log.info("[certhax] - Found ecs:GetAccountStatus message")
             ctx.log.info("[certhax] - Sending list of services URL...")
-            flow.response = http.HTTPResponse.make(
+            flow.response = http.Response.make(
                 200,
                 GetAccountStatusResponse,
                 {"Content-Type": "text/xml"}
@@ -130,7 +132,7 @@ def request(flow: http.HTTPFlow) -> None:
     elif flow.request.url == "http://conntest.nintendowifi.net/":
         ctx.log.info("[certhax] - Found conntest request")
         ctx.log.info("[certhax] - Sending response...")
-        flow.response = http.HTTPResponse.make(
+        flow.response = http.Response.make(
             200,
             conntest,
             {"Content-Type": "text/html", "X-Organization": "Nintendo"}
