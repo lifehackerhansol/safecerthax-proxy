@@ -42,6 +42,8 @@ certhax_payload_b64 = None
 arm9_payload_b64 = None
 
 def running():
+    if getattr(ctx.master, 'window', None) is None:
+        return # none interactive or no window
     for stack in ctx.master.window.stacks:
         stack.windows["certhaxlog"] = CerthaxLog(ctx.master)
     ctx.master.switch_view("certhaxlog")
