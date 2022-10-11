@@ -84,7 +84,23 @@ GetSystemUpdateResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:En
 
 GetSystemCommonETicketResponse = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soapenv:Body><GetSystemCommonETicketResponse xmlns=\"urn:nus.wsapi.broadon.com\"><Version>1.0</Version><DeviceId></DeviceId><MessageId>1</MessageId><TimeStamp></TimeStamp><ErrorCode>0</ErrorCode><CommonETicket>AAAA</CommonETicket><Certs>{}</Certs><Certs>AAAA</Certs><Certs>AAAA</Certs><Certs>AAAA</Certs><Certs>{}</Certs></GetSystemCommonETicketResponse></soapenv:Body></soapenv:Envelope>"
 
+UndesiredRequestResponse = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><title>Proxy exit!</title></head><body bgcolor=\"#FFFFFF\">Please set your Internet back to normal.</body></html>"
+
 def request(flow: http.HTTPFlow) -> None:
+    if flow.request.host not in [
+        'nus.c.shop.nintendowifi.net',
+        'ias.c.shop.nintendowifi.net',
+        'cas.c.shop.nintendowifi.net',
+        'ecs.c.shop.nintendowifi.net',
+        'conntest.nintendowifi.net'
+    ]:
+        flow.response = http.Response.make(
+            403,
+            UndesiredRequestResponse,
+            {"Content-Type": "text/html"}
+        )
+        return
+
     if flow.request.url == "https://nus.c.shop.nintendowifi.net/nus/services/NetUpdateSOAP":
         if not ctx.options.certhax_payload or not certhax_payload_b64:
             ctx.log.warn("[certhax] - The certhax payload file is not set, the exploit won't be triggered...")
