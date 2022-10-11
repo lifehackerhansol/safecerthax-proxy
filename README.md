@@ -17,6 +17,7 @@ For more information on safecerthax, please visit the [safecerthax website](http
 To start the proxy server, run the following command:
 ```
 mitmproxy -s safecerthax.py \
+  -s tls_whitelist.py \
   --certs c.shop.nintendowifi.net=<*.c.shop.nintendowifi.net_fake_certificate> \
   --certs cdn.nintendo.net=<*.cdn.nintendo.net_fake_certificate> \
   --set client_certs=<client_certificate> \
@@ -24,7 +25,7 @@ mitmproxy -s safecerthax.py \
   --set relax_http_form_validation \
   --set certhax_payload=<safecerthax_binary> \
   --set arm9_payload=<kernelhaxcode_3ds_binary> \
-  --set tls_version_client_min=TLS1_1
+  --set tls_version_client_min=TLS1
 ```
 
 With:
