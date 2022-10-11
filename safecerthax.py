@@ -96,7 +96,8 @@ def request(flow: http.HTTPFlow) -> None:
         'cas.c.shop.nintendowifi.net',
         'ecs.c.shop.nintendowifi.net',
         'conntest.nintendowifi.net',
-        'cbvc.cdn.nintendo.net'
+        'cbvc.cdn.nintendo.net',
+        'zoogie.github.io'
     ]:
         flow.response = http.Response.make(
             403,
