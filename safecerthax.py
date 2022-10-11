@@ -2,52 +2,57 @@ from mitmproxy import ctx
 from mitmproxy import http
 from mitmproxy import log
 from mitmproxy.tools.console import eventlog
-from mitmproxy.tools.console.window import WindowStack
 from mitmproxy import command
 from base64 import b64encode
-from struct import pack
 
 import re
-import sys
+
 
 class CerthaxLog(eventlog.EventLog):
     title = "Certhax"
     keyctx = "certhaxlog"
+
     def __init__(self, master):
         super().__init__(master)
         master.options.console_focus_follow = True
+
     def add_event(self, event_store, entry: log.LogEntry):
-        if not str(entry.msg).startswith("[certhax]"): return
+        if not str(entry.msg).startswith("[certhax]"):
+            return
         super().add_event(event_store, entry)
+
 
 @command.command("console.view.certhaxlog")
 def view_certhaxlog() -> None:
     ctx.master.switch_view("eventlog")
 
 
-def load(l):
-    l.add_option(
-        name = "certhax_payload",
-        typespec = str,
-        default = "",
-        help = "Initial certhax payload"
+def load(ld):
+    ld.add_option(
+        name="certhax_payload",
+        typespec=str,
+        default="",
+        help="Initial certhax payload"
     )
-    l.add_option(
-        name = "arm9_payload",
-        typespec = str,
-        default = "",
-        help = "Arm9 payload sent just after the initial payload"
+    ld.add_option(
+        name="arm9_payload",
+        typespec=str,
+        default="",
+        help="Arm9 payload sent just after the initial payload"
     )
+
 
 certhax_payload_b64 = None
 arm9_payload_b64 = None
 
+
 def running():
     if getattr(ctx.master, 'window', None) is None:
-        return # none interactive or no window
+        return  # none interactive or no window
     for stack in ctx.master.window.stacks:
         stack.windows["certhaxlog"] = CerthaxLog(ctx.master)
     ctx.master.switch_view("certhaxlog")
+
 
 def configure(updates):
     global certhax_payload_b64
@@ -75,6 +80,7 @@ def configure(updates):
                 arm9_payload_b64 = None
                 ctx.log.error("[certhax] - Could not open payload file: " + ctx.options.arm9_payload)
 
+
 conntest = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><title>HTML Page</title></head><body bgcolor=\"#FFFFFF\">This is test.html page</body></html>"
 
 GetSystemTitleHashResponse = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soapenv:Body><GetSystemTitleHashResponse xmlns=\"urn:nus.wsapi.broadon.com\"><Version>1.0</Version><DeviceId></DeviceId><MessageId></MessageId><TimeStamp></TimeStamp><ErrorCode>0</ErrorCode><TitleHash>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</TitleHash></GetSystemTitleHashResponse></soapenv:Body></soapenv:Envelope>"
@@ -88,6 +94,7 @@ GetSystemCommonETicketResponse = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soa
 UndesiredRequestResponse = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><title>Proxy exit!</title></head><body bgcolor=\"#FFFFFF\">Please set your Internet back to normal.</body></html>"
 
 BrowserVersionCheckMatch = re.compile('(?i)\\/(?:SNAKE|CTR)\\/\\d{1,2}\\/(?:JPN|USA|EUR|KOR|CHN|TWN)')
+
 
 def request(flow: http.HTTPFlow) -> None:
     if flow.request.host not in [
