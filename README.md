@@ -17,7 +17,8 @@ For more information on safecerthax, please visit the [safecerthax website](http
 To start the proxy server, run the following command:
 ```
 mitmproxy -s safecerthax.py \
-  --set certs=\*=<fake_certificate> \
+  --certs c.shop.nintendowifi.net=<*.c.shop.nintendowifi.net_fake_certificate> \
+  --certs cdn.nintendo.net=<*.cdn.nintendo.net_fake_certificate> \
   --set client_certs=<client_certificate> \
   --ssl-insecure \
   --set relax_http_form_validation \
@@ -27,7 +28,7 @@ mitmproxy -s safecerthax.py \
 ```
 
 With:
-- `fake_certificate`: the path to your fake certificate (in PEM format) created with [SSLoth](https://github.com/MrNbaYoh/3ds-ssloth) that mimics the certificate for `*.c.shop.nintendowifi.net` domains.
+- `fake_certificate`: the path to your fake certificate (in PEM format) created with [SSLoth](https://github.com/MrNbaYoh/3ds-ssloth) that mimics the certificate for `*.c.shop.nintendowifi.net` and `*.cdn.nintendo.net` domains.
 -  `client_certificate`: the path to the ClCertA `ctr-common-1-cert` (in PEM format).
 - `safecerthax_binary`: the path to the `safecerthax.bin` binary file.
 - `kernelhaxcode_3ds_binary`: the path to the `kernelhaxcode_3ds.bin` binary file.

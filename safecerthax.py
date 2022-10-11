@@ -7,6 +7,7 @@ from mitmproxy import command
 from base64 import b64encode
 from struct import pack
 
+import re
 import sys
 
 class CerthaxLog(eventlog.EventLog):
@@ -86,18 +87,29 @@ GetSystemCommonETicketResponse = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soa
 
 UndesiredRequestResponse = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><title>Proxy exit!</title></head><body bgcolor=\"#FFFFFF\">Please set your Internet back to normal.</body></html>"
 
+BrowserVersionCheckMatch = re.compile('(?i)\\/(?:SNAKE|CTR)\\/\\d{1,2}\\/(?:JPN|USA|EUR|KOR|CHN|TWN)')
+
 def request(flow: http.HTTPFlow) -> None:
     if flow.request.host not in [
         'nus.c.shop.nintendowifi.net',
         'ias.c.shop.nintendowifi.net',
         'cas.c.shop.nintendowifi.net',
         'ecs.c.shop.nintendowifi.net',
-        'conntest.nintendowifi.net'
+        'conntest.nintendowifi.net',
+        'cbvc.cdn.nintendo.net'
     ]:
         flow.response = http.Response.make(
             403,
             UndesiredRequestResponse,
             {"Content-Type": "text/html"}
+        )
+        return
+
+    if flow.request.host == 'cbvc.cdn.nintendo.net' and re.fullmatch(BrowserVersionCheckMatch, flow.request.path):
+        flow.response = http.Response.make(
+            200,
+            '0',
+            {"Content-Type": "text/plain"}
         )
         return
 
