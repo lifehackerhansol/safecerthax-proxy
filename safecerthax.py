@@ -95,8 +95,13 @@ UndesiredRequestResponse = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transi
 
 BrowserVersionCheckMatch = re.compile('(?i)\\/(?:SNAKE|CTR)\\/\\d{1,2}\\/(?:JPN|USA|EUR|KOR|CHN|TWN)')
 
+cdn_nintendowifi = re.compile("(?i)((?:.+\\.)?)(?:cdn\\.nintendowifi\\.net)")
+
 
 def request(flow: http.HTTPFlow) -> None:
+    if re.fullmatch(cdn_nintendowifi, flow.request.host):
+        return
+
     if flow.request.host not in [
         'nus.c.shop.nintendowifi.net',
         'ias.c.shop.nintendowifi.net',
@@ -104,6 +109,12 @@ def request(flow: http.HTTPFlow) -> None:
         'ecs.c.shop.nintendowifi.net',
         'conntest.nintendowifi.net',
         'cbvc.cdn.nintendo.net',
+        'nppl.c.app.nintendowifi.net',
+        'nasc.nintendowifi.net',
+        'ocsp.digicert.com',
+        'ars.ifuser.jp',
+        'ars.ifuser.jp:20080',
+        'sec.ifilter.jp',
         'zoogie.github.io'
     ]:
         flow.response = http.Response.make(
