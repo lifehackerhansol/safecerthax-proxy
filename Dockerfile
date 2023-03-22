@@ -3,7 +3,6 @@ FROM archlinux:latest
 RUN pacman-key --init && pacman -Sy --noconfirm archlinux-keyring --needed && pacman -Syu --noconfirm mitmproxy --needed && ( yes | pacman -Scc ) && rm /var/lib/pacman/sync/*.db
 
 RUN mkdir /mitm
-RUN mkdir /mitm-extras
 
 WORKDIR /mitm
 
