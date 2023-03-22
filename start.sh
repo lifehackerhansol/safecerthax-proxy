@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/usr/bin/mitmdump \
+python3 -u /usr/bin/mitmdump \
   -s /mitm/safecerthax.py \
   -s /mitm/tls_whitelist.py \
   --certs c.shop.nintendowifi.net=/mitm-extra/star.c.shop.nintendowifi.net.pem \
