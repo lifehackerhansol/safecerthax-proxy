@@ -2,6 +2,7 @@
 
 /usr/bin/mitmdump \
   -s /mitm/safecerthax.py \
+  -s /mitm/tls_whitelist.py \
   --certs c.shop.nintendowifi.net=/mitm-extra/star.c.shop.nintendowifi.net.pem \
   --certs cdn.nintendo.net=/mitm-extra/star.cdn.nintendo.net.pem \
   --set client_certs=/mitm-extra/ctr-common-1.pem \
