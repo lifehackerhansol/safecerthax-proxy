@@ -11,4 +11,5 @@ python3 -u /usr/bin/mitmdump \
   --set certhax_payload=/mitm-extra/safecerthax.bin \
   --set arm9_payload=/mitm-extra/kernelhaxcode_3ds.bin \
   --set tls_version_client_min=TLS1 \
-  --set block_global=false
+  --set block_global=false \
+  >> /mitm-extra/log.log
