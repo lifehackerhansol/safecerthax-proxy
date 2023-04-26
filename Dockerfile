@@ -9,6 +9,7 @@ WORKDIR /mitm
 COPY start.sh .
 COPY safecerthax.py .
 COPY tls_whitelist.py .
+COPY filter.py .
 
 RUN chmod a+x start.sh
 
