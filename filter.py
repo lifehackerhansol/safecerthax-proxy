@@ -28,7 +28,8 @@ class Filter:
             sni = data.client.sni or data.server.address and data.server.address[0]
 
         if sni is None:
-            return
+            # return
+            data.server.error = "Nope"
 
         if sni not in allowed_snis and re.fullmatch(allowed_sni_cdn_nintendowifi, sni) is None:
             data.server.error = "Proxy not for normal use. Please reset your proxy settings."
